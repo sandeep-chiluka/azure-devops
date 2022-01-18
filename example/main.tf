@@ -45,3 +45,12 @@ module "vnet" {
     purpose     = "interview_assesment"
   }
 }
+
+module "linuxservers" {
+  source              = "../modules/AZ_linux_vm"
+  resource_group_name = var.resource_group_name
+  Name                = "Test_linux_vm"
+  security_group_id   = [ azurerm_network_security_group.ssh.id ]
+  file_path           = "/Users/pradeep/.ssh/azure.pub"
+  vnet_subnet_id      = module.vnet.vnet_subnets
+}

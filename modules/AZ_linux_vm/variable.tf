@@ -62,9 +62,26 @@ variable "public_ip_dns" {
 
 variable "security_group_id" {
   description = "A list of public SG inside the vNet."
-  type        = list(string)ss
+  type        = list(string)
 }
 
 variable "file_path" {
   type        = string
+}
+
+variable "tags" {
+  description = "The tags to associate with your network and subnets."
+  type        = map(string)
+
+  default = {
+    ENV = "test"
+  }
+}
+
+variable "os_disk_caching" {
+  default = "ReadWrite"
+}
+
+variable "os_disk_storage_account_type" {
+  default = "Standard_LRS"
 }

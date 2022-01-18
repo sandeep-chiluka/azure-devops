@@ -3,7 +3,7 @@ data azurerm_resource_group "vm" {
   name = var.resource_group_name
 }
 
-resource "azurerm_linux_virtual_machine" "example"
+resource "azurerm_linux_virtual_machine" "vm-linux" {
   count = var.count_value ? var.count_value : 1
   name                = "${var.Name}-vmlinux-${count.index}"
   resource_group_name =  data.azurerm_resource_group.vm.name
@@ -16,6 +16,11 @@ resource "azurerm_linux_virtual_machine" "example"
     username   = var.admin_username
     public_key = file(var.file_path)
   }
+
+  os_disk {
+  caching              = var.os_disk_caching
+  storage_account_type = var.os_disk_storage_account_type
+}
 
   source_image_reference {
     publisher = "Canonical"
@@ -38,14 +43,14 @@ resource "azurerm_public_ip" "vm" {
 
 // Dynamic public ip address will be got after it's assigned to a vm
 data "azurerm_public_ip" "vm" {
-  count               = var.nb_public_ip
+  count               = var.count_value
   name                = azurerm_public_ip.vm[count.index].name
   resource_group_name = data.azurerm_resource_group.vm.name
-  depends_on          = [azurerm_virtual_machine.vm-linux, azurerm_virtual_machine.vm-windows]
+  depends_on          = [azurerm_linux_virtual_machine.vm-linux]
 }
 
 resource "azurerm_network_interface" "vm" {
-  count                         = var.nb_instances
+  count                         = var.count_value
   name                          = "${var.Name}-nic-${count.index}"
   resource_group_name           = data.azurerm_resource_group.vm.name
   location                      = coalesce(var.location, data.azurerm_resource_group.vm.location)
@@ -61,8 +66,8 @@ resource "azurerm_network_interface" "vm" {
   tags = var.tags
 }
 
-resource "azurerm_network_interface_security_group_association" "test" {
-  count                     = var.nb_instances
-  network_interface_id      = azurerm_network_interface.vm[count.index].id
-  network_security_group_id = var.security_group_id
-}
+# resource "azurerm_network_interface_security_group_association" "test" {
+#   count                     = var.count_value
+#   network_interface_id      = azurerm_network_interface.vm[count.index].id
+#   network_security_group_id = var.security_group_id
+# }
