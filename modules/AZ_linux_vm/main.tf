@@ -4,10 +4,10 @@ data azurerm_resource_group "vm" {
 }
 
 resource "azurerm_linux_virtual_machine" "vm-linux" {
-  count = var.count_value ? var.count_value : 1
+  count = var.multiple ? var.count_value : 1
   name                = "${var.Name}-vmlinux-${count.index}"
   resource_group_name =  data.azurerm_resource_group.vm.name
-  location            = coalesce(var.location, data.azurerm_resource_group.vm.location)
+  location            = var.location
   size                = var.vm_size
   admin_username      = var.admin_username
   network_interface_ids = [element(azurerm_network_interface.vm.*.id, count.index)]

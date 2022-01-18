@@ -5,7 +5,7 @@ variable "Name" {
 
 variable "location" {
     type = string
-    default = "westus2"
+    default = "eastus"
 }
 
 variable "resource_group_name" {

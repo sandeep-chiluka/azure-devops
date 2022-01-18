@@ -4,5 +4,5 @@ variable "resource_group_name" {
 
 variable "RG_LOCATION" {
    type = string
-   default = "westus2"
+   default = "eastus"
 }

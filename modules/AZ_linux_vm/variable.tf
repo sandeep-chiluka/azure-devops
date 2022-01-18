@@ -3,6 +3,11 @@ variable "Name" {
   type = string
 }
 
+variable "multiple" {
+  type = bool
+  default = false
+}
+
 variable "count_value" {
   type = number
   default = "1"
@@ -16,13 +21,13 @@ variable "resource_group_name" {
 variable "location" {
   description = "(Optional) The location in which the resources will be created."
   type        = string
-  default     = ""
+  default     = "eastus"
 }
 
 variable "vm_size" {
   description = "Specifies the size of the virtual machine."
   type        = string
-  default     = "Standard_D2s_v3"
+  default     = "Standard_DS1_v2"
 }
 
 variable "admin_username" {
@@ -62,7 +67,7 @@ variable "public_ip_dns" {
 
 variable "security_group_id" {
   description = "A list of public SG inside the vNet."
-  type        = list(string)
+  type        = list
 }
 
 variable "file_path" {
