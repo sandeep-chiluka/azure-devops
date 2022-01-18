@@ -60,3 +60,44 @@ module "linuxservers" {
   file_path           = "/Users/pradeep/.ssh/azure.pub"
   vnet_subnet_id      = module.vnet.vnet_subnets[0]
 }
+
+
+module "azure-region" {
+  source  = "claranet/regions/azurerm"
+
+  azure_region = var.location
+}
+
+resource "azurerm_log_analytics_workspace" "this" {
+  name                = "acctest-01"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
+}
+
+module "cosmosdb" {
+  source  = "../modules/AZ_cosmosDB"
+
+  environment    = "dev"
+  location       = module.azure-region.location
+  location_short = module.azure-region.location_short
+  client_name    = "test"
+  stack          = "assesment"
+
+  resource_group_name = var.resource_group_name
+
+  logs_destinations_ids = [ azurerm_log_analytics_workspace.this.id ]
+
+  backup = {
+    type                = "Periodic"
+    interval_in_minutes = 60 * 3 # 3 hours
+    retention_in_hours  = 24
+  }
+
+  extra_tags = {
+    managed_by            = "Terraform"
+    foo                   = "bar"
+    monitor_autoscale_max = 2
+  }
+}
