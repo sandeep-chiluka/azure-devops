@@ -90,3 +90,19 @@ variable "os_disk_caching" {
 variable "os_disk_storage_account_type" {
   default = "Standard_LRS"
 }
+
+variable "source_image_publisher" {
+  default = "Canonical"
+}
+
+variable "source_image_offer" {
+  default = "UbuntuServer"
+}
+
+variable "source_image_sku" {
+  default = "16.04-LTS"
+}
+
+variable "source_image_version" {
+  default = "latest"
+}
